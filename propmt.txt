@@ -1,0 +1,46 @@
+here is teh logic:
+1-the user paste a path of the folder in an input(console).
+2-the script check if the path exists in the computer first and that the path lead to a folder and not a file.
+3-if the path lead to a folder the script have to check if the folder have files in the first place subfolders do not count we wont touch those.
+4-the script loop over all the files extensionnes.
+5- their will be a liste of all the folder extensionnes.
+6-if the loop stumble a gainst a new extension that isnt in the list it is added to the liste and create the new folder of the new extension and place the file in the new folder.
+7-if the file extension is already in the list it look for the folder tha match the extension and replace it .
+8-if the file have to extension it get added to the no extension folder that gets created of course the same way to the other folders it is just that this time the folder can contain different type of files that do not have an extension.
+9-at the end the console print a repport of each folder created and how many files are in it.
+this is my aproche but i feel like looping over every file is not a slow aproach what areyour sugggestionnes.
+
+
+1/the strip method strip the path from any spaces ?i guess we need it to avoid wrong paths that can cuase errors just like we do with lowercase for sensible languages like python.
+2/os.path.exists() tell us if the path exists in the machine or not aka our os and isdir method verify id the path lead to a directory aka a folder ,the path is th sam anyway because strip remove tha spaces from all the inputs so we have the same path all the time .
+3/os.path.join() i am not sure why we use it maybe because the item can be a folder or a file and we dont know what it is because if you want to use the "/" for path you will need the extenstion of the file to have the right path because we can have the same name but different extensionnes  of a file and to distenguesh them and we can also have a file with no extension but the same name of a file with an extension that will cause problems we use join to properly select the path of teh file with it is extension if he have it.
+isfile will skip subfolders because we wont work with theme now
+4/
+for file in files:
+    # Get the extension
+    extension = os.path.splitext(file)[1]
+
+    # HINT: Use file.suffix if using pathlib
+    # HINT: Use os.path.splitext() if using os
+    # If extension exists, add to dictionary
+    if extension :
+        extension.append(file)
+    # If no extension, add to no_extension list
+    else:
+        files_no_extension.append(file)
+i am not sure it is right i forgot how directories work from my view if a key is not in a directory it get appended to te directory if the ket exists it append the value to a list so we get key values with values being lists of teh files of each extension.
+
+i have not tested i want to understand first
+
+- the services will containe all the eservices tha the user can use each service file will export 4 things a {service_name,service_uuid,service_method,service_description}.
+- the service name will be a string tha will be writing in the file the method is a fun that can be executed and the uuid and description can also be chosen in the file.
+- all this infos will be exported.
+- the index file is like the home file it will print welcoming ifos and list all the services available in the services folder with their name and description.
+- the user then choose what services by typing te num of service 1,2,3 ... after the user choose the index run the service method of the chosen service.
+- right now wrap the service 0 file in it is function and export the name and description with uuid from your choice.
+- try not to change the service file syntax if there are majot changes needed i will suggest doing it in the index file.
+- what do you think ?
+
+- i want you to make a new service the same as service 0 but ths time it goes trough sub folders so if there are any folders inside the main path it got trough so baslly all the files inside the path no matter were they are inside a folder or not will be filtered by the script 
+- since service go trough only the files in a folder i would like to reuse it for scaliballty since it have tha same objectif .
+- what is your plan and how do we think we can make this work ?

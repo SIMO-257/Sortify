@@ -1,0 +1,21 @@
+{
+  "name": "python",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000S\u0000o\u0000r\u0000t\u0000i\u0000f\u0000y\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SIMO-257/Sortify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SIMO-257/Sortify/issues"
+  },
+  "homepage": "https://github.com/SIMO-257/Sortify#readme"
+}
