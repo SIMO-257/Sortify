@@ -3,7 +3,7 @@ from Tasks.collect_files import list_files_recursive
 from Tasks.group_files import group_by_extension
 from Tasks.move_files import create_folder, move_file
 
-service_name = "Deep File Organizer"
+service_name = "File Organizer Extension Based - [recursive]"
 service_uuid = "d4e5f6"
 service_description = "Organizes all files recursively including those inside subfolders"
 service_method = None
@@ -78,7 +78,11 @@ def run():
     print("\n" + "="*50)
     confirm = input("Continue with organization? (y/n): ").strip().lower()
 
-    if confirm != 'y':
+    while confirm not in ["y","n"]:
+        print("❌ Wrong input type 'y'or 'n' to confirm organization or Ctr+c to exit the program.")
+        confirm = input("Continue with organization? (y/n): ").strip().lower()
+
+    if confirm == 'n':
         print("❌ Organization cancelled.")
         return
 

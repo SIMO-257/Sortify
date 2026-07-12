@@ -3,9 +3,9 @@ from Tasks.collect_files import list_files_flat
 from Tasks.group_files import group_by_extension
 from Tasks.move_files import create_folder, move_file
 
-service_name = "File Organizer"
+service_name = "File Organizer Extension Based - [flat]"
 service_uuid = "a1b2c3"
-service_description = "Organizes files in a folder by their extensions"
+service_description = "Organizes files in a folder by their extensions excluding subfolders"
 service_method = None
 
 def run():
@@ -78,7 +78,12 @@ def run():
     print("\n" + "="*50)
     confirm = input("Continue with organization? (y/n): ").strip().lower()
 
-    if confirm != 'y':
+    while confirm not in ["y","n"]:
+        print("❌ Wrong input type 'y'or 'n' to confirm organization or Ctr+c to exit the program.")
+        confirm = input("Continue with organization? (y/n): ").strip().lower()
+
+
+    if confirm == 'n':
         print("❌ Organization cancelled.")
         return
 

@@ -3,9 +3,9 @@ import os
 from Tasks.collect_files import list_files_recursive
 from Tasks.group_files import group_by_extension
 
-service_name = "Ultimate files Destroyer"
+service_name = "Files Cleaner Extension Based - [recursive]"
 service_uuid = "a2b2c3"
-service_description = "Delete all files based on extension including sub folders"
+service_description = "Delete files in a folder by their extensions including subfolders"
 service_method = None
 
 def run():
@@ -80,9 +80,9 @@ def run():
 
     confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
 
-    if confirm != "delete":
-        print("❌ Deletion cancelled.")
-        return
+    while confirm != "delete":
+        print("❌ Wrong input type 'delete' to confirm removal or Ctr+c to exit the program.")
+        confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
 
     deleted_count = 0
     errors = 0

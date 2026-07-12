@@ -3,9 +3,9 @@ import os
 from Tasks.collect_files import list_files_flat
 from Tasks.group_files import group_by_extension
 
-service_name = "File Destroyer Extension Based "
+service_name = "File Cleaner Extension Based - [flat]"
 service_uuid = "a1b2c8"
-service_description = "Delete files in a folder by their extensions"
+service_description = "Delete files in a folder by their extensions excluding subfolders"
 service_method = None
 
 def run():
@@ -79,9 +79,9 @@ def run():
 
     confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
 
-    if confirm != "delete":
-        print("❌ Deletion cancelled.")
-        return
+    while confirm != "delete":
+        print("❌ Wrong input type 'delete' to confirm removal or Ctr+c to exit the program.")
+        confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
 
     deleted_count = 0
     errors = 0

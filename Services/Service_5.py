@@ -1,10 +1,10 @@
 import os
 
-from Tasks.collect_files import list_files_flat_withlabel
+from Tasks.collect_files import list_files_recursive_withlabel
 
-service_name = "Files Cleaner By Name - [Flat]"
-service_uuid = "a2b2d3"
-service_description = "Delete all files based on the file name excluding sub folders"
+service_name = "Files Cleaner By Name - [recursive]"
+service_uuid = "a2h2d3"
+service_description = "Delete all files based on the file name encluding sub folders"
 service_method = None
 
 def run ():
@@ -20,7 +20,7 @@ def run ():
 
     label = input("Enter the files name to clean: ").strip()
 
-    items = list_files_flat_withlabel(folder_path,label)
+    items = list_files_recursive_withlabel(folder_path,label)
 
     if not items:
          print("No files found in the specified folder.")
