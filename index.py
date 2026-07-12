@@ -1,5 +1,4 @@
 import importlib
-import os
 from pathlib import Path
 
 SERVICES_DIR = Path("Services")
@@ -51,7 +50,8 @@ def main():
                 svc = services[index]
                 print(f"\n  Starting: {svc['name']} ({svc['uuid']})\n")
                 svc["method"]()
-                print("\n  Service finished. Returning to menu...")
+                print("\n  Service finished. Exiting program...")
+                break
             else:
                 print(f"  Please enter a number between 1 and {len(services)}.")
         except ValueError:

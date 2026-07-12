@@ -6,27 +6,27 @@ from Tasks.group_files import group_by_extension
 service_name = "Ultimate files Destroyer"
 service_uuid = "a2b2c3"
 service_description = "Delete all files based on extension including sub folders"
-service_method = None 
+service_method = None
 
 def run():
-	folder_path = input("Enter the folder path to clean: ").strip()
-	
-	if not os.path.exists(folder_path):
+    folder_path = input("Enter the folder path to clean: ").strip()
+
+    if not os.path.exists(folder_path):
         print("Error: Path does not exist!")
         return
 
     if not os.path.isdir(folder_path):
         print("Error: Path is not a folder!")
         return
-        
+
     items = list_files_recursive(folder_path)
 
     if not items:
         print("No files found in the specified folder.")
         return
-        
+
     extensions, no_extension = group_by_extension(items)
-    
+
     options = []
     for ext in sorted(extensions.keys()):
         options.append((ext, f"{ext} ({len(extensions[ext])} files)"))
@@ -37,7 +37,7 @@ def run():
     if not options:
         print("No files found in the specified folder.")
         return
-        
+
     print("\n" + "=" * 50)
     print("📊 FILE EXTENSIONS FOUND")
     print("=" * 50)
@@ -51,7 +51,7 @@ def run():
     print("=" * 50)
 
     choice = input(f"Choose an option (1-{len(options)}): ").strip()
-    
+
     try:
         selected_index = int(choice) - 1
     except ValueError:
@@ -68,22 +68,40 @@ def run():
         files_to_delete = no_extension
     else:
         files_to_delete = extensions[selected_key]
-        
+
     print("\n" + "=" * 50)
     print("⚠️ DELETE PREVIEW")
     print("=" * 50)
     print(f"Selected: {selected_label}")
     print(f"Files to delete: {len(files_to_delete)}")
-    
+
     for src, filename in files_to_delete:
         print(f"  - {filename}")
 
     confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
-    
+
     if confirm != "delete":
         print("❌ Deletion cancelled.")
         return
-      
-    print("✅ DELETION COMPLETE")
-    
-service_method = run 
+
+    deleted_count = 0
+    errors = 0
+
+    for src, filename in files_to_delete:
+        try:
+            os.remove(src)
+            deleted_count += 1
+            print(f"✓ Deleted: {filename}")
+        except Exception as exc:
+            errors += 1
+            print(f"✗ Error deleting {filename}: {exc}")
+
+        print("\n" + "=" * 50)
+        print("✅ DELETION COMPLETE")
+        print("=" * 50)
+        print(f"Deleted files: {deleted_count}")
+
+    if errors:
+        print(f"Errors: {errors}")
+
+service_method = run
