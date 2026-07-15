@@ -4,7 +4,7 @@ from Tasks.collect_files import list_files_recursive_withlabel
 
 service_name = "Files Cleaner By Name - [recursive]"
 service_uuid = "a2h2d3"
-service_description = "Delete all files based on the file name encluding sub folders"
+service_description = "Delete all files based on the file name including sub folders"
 service_method = None
 
 def run ():

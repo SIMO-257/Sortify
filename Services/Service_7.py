@@ -1,13 +1,13 @@
 import os
 import shutil
 
-from Tasks.collect_files import list_files_flat
+from Tasks.collect_files import list_files_recursive
 from Tasks.display_files import display_files_by_extensiones
 from Tasks.group_files import group_by_extension
 
-service_name = "Files Replacer Extension Based - [flat]"
-service_uuid = "a1l2n1"
-service_description = "Moving files from a folder to another based on extension excluding subfolders"
+service_name = "Files Replacer Extension Based - [recursive]"
+service_uuid = "a1l2n3"
+service_description = "Moving files from a folder to another based on extension including subfolders"
 service_method = None
 
 def run():
@@ -21,7 +21,7 @@ def run():
         print("Error: Path is not a folder!")
         return
 
-    items = list_files_flat(folder_path)
+    items = list_files_recursive(folder_path)
 
     if not items:
         print("No files found in the specified folder.")
