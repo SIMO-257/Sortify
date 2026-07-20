@@ -53,10 +53,10 @@ def run ():
             errors += 1
             print(f"✗ Error deleting {filename}: {exc}")
 
-        print("\n" + "=" * 50)
-        print("✅ DELETION COMPLETE")
-        print("=" * 50)
-        print(f"Deleted files: {deleted_count}")
+    print("\n" + "=" * 50)
+    print("✅ DELETION COMPLETE")
+    print("=" * 50)
+    print(f"Deleted files: {deleted_count}")
 
     if errors:
         print(f"Errors: {errors}")
