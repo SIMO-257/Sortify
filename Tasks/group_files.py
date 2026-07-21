@@ -1,5 +1,6 @@
 import os
 
+from datetime import datetime
 
 def group_by_extension(items):
     extensions = {}
@@ -13,3 +14,14 @@ def group_by_extension(items):
             no_extension.append((src, filename))
 
     return extensions, no_extension
+
+def group_by_date_day(items):
+
+    dates = {}
+
+    for src,filename in items:
+        time  = os.path.getmtime(src)
+        file_date = (datetime.fromtimestamp(time)).strftime('%Y-%m-%d')
+        dates.setdefault(file_date,[]).append((src,filename))
+
+    return dates
