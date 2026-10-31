@@ -16,12 +16,10 @@ def group_by_extension(items):
     return extensions, no_extension
 
 def group_by_date_day(items):
-
     dates = {}
 
-    for src,filename in items:
-        time  = os.path.getmtime(src)
-        file_date = (datetime.fromtimestamp(time)).strftime('%Y-%m-%d')
-        dates.setdefault(file_date,[]).append((src,filename))
+    for src, filename in items:
+        file_date = datetime.fromtimestamp(os.path.getmtime(src)).strftime("%Y-%m-%d")
+        dates.setdefault(file_date, []).append((src, filename))
 
     return dates

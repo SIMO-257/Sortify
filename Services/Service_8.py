@@ -1,4 +1,4 @@
-from Tasks import flows
+from sortify.console import flows
 
 service_name = "Files Organizer Date Based(Days) - [flat]"
 service_uuid = "a1l2n4"

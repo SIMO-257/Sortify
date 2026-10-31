@@ -3,9 +3,9 @@ import os
 import pytest
 
 from Services import Service_4, Service_5, Service_6, Service_7, Service_10
-from Tasks.group_files import group_by_extension
-from Tasks.safety import blocked_reason, check_folder, clean_path, is_inside
-from Tasks.ui import BackToMenu
+from sortify.core.group import group_by_extension
+from sortify.core.safety import blocked_reason, check_folder, clean_path, is_inside
+from sortify.console.ui import BackToMenu
 from tests.helpers import feed_inputs
 
 

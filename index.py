@@ -2,7 +2,7 @@ import importlib
 import re
 from pathlib import Path
 
-from Tasks.ui import BackToMenu, QuitProgram
+from sortify.console.ui import BackToMenu, QuitProgram
 
 SERVICES_DIR = Path(__file__).resolve().parent / "Services"
 

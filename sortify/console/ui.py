@@ -1,4 +1,4 @@
-from Tasks.safety import check_folder
+from sortify.core.safety import check_folder
 
 PREVIEW_LIMIT = 20
 HELP = "(b = back to menu, q = quit)"

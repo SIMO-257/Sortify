@@ -1,4 +1,4 @@
-from Tasks import flows
+from sortify.console import flows
 
 service_name = "File Organizer Extension Based - [flat]"
 service_uuid = "a1b2c3"

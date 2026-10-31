@@ -1,4 +1,4 @@
-from Tasks import flows
+from sortify.console import flows
 
 service_name = "Files Replacer Extension Based - [flat]"
 service_uuid = "a1l2n1"

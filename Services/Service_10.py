@@ -1,4 +1,4 @@
-from Tasks import flows
+from sortify.console import flows
 
 service_name = "Empty Directories Cleaner"
 service_uuid = "a1b2c7"

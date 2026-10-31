@@ -1,4 +1,4 @@
-from Tasks import flows
+from sortify.console import flows
 
 service_name = "Files Cleaner By Name - [Flat]"
 service_uuid = "a2b2d3"

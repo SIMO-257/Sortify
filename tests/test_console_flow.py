@@ -1,10 +1,11 @@
 import os
+import shutil
 
 import pytest
 
 import index
-from Services import Service_0, Service_1, Service_2, Service_3, Service_8, Service_9
-from Tasks.ui import BackToMenu, QuitProgram
+from Services import Service_11, Service_0, Service_1, Service_2, Service_3, Service_8, Service_9
+from sortify.console.ui import BackToMenu, QuitProgram
 from tests.helpers import feed_inputs
 
 
@@ -15,8 +16,9 @@ def names(path):
 def test_menu_is_sorted_numerically():
     order = [s["name"] for s in index.load_services()]
     assert order[0].startswith("File Organizer Extension Based - [flat]")
-    assert order[-1] == "Empty Directories Cleaner"
-    assert len(order) == 11
+    assert order[-2] == "Empty Directories Cleaner"
+    assert order[-1] == "Undo a previous run"
+    assert len(order) == 12
 
 
 def test_organize_flat_ignores_subfolders(tmp_path, monkeypatch):
@@ -97,7 +99,7 @@ def test_date_organizer_groups_by_day(tmp_path, monkeypatch):
 def test_failures_are_reported(tmp_path, monkeypatch, capsys):
     (tmp_path / "a.tmp").write_text("x")
     feed_inputs(monkeypatch, [str(tmp_path), "1", "delete"])
-    monkeypatch.setattr(os, "remove", lambda p: (_ for _ in ()).throw(PermissionError("denied")))
+    monkeypatch.setattr(shutil, "move", lambda *a: (_ for _ in ()).throw(PermissionError("denied")))
     Service_2.run()
     out = capsys.readouterr().out
     assert "Failed:  1" in out and "denied" in out
@@ -121,3 +123,16 @@ def test_back_and_quit_exceptions(tmp_path, monkeypatch):
     feed_inputs(monkeypatch, ["q"])
     with pytest.raises(QuitProgram):
         Service_0.run()
+
+
+def test_undo_from_the_console(tmp_path, monkeypatch, capsys):
+    (tmp_path / "a.tmp").write_text("x")
+    feed_inputs(monkeypatch, [str(tmp_path), "1", "delete"])
+    Service_2.run()
+    assert names(tmp_path) == []
+    feed_inputs(monkeypatch, ["1", "y"])
+    Service_11.run()
+    assert names(tmp_path) == ["a.tmp"]
+    feed_inputs(monkeypatch, [])
+    Service_11.run()
+    assert "nothing to undo" in capsys.readouterr().out.lower()
