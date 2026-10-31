@@ -1,8 +1,11 @@
 import os
 
+import pytest
+
 from Services import Service_4, Service_5, Service_6, Service_7, Service_10
 from Tasks.group_files import group_by_extension
 from Tasks.safety import blocked_reason, check_folder, clean_path, is_inside
+from Tasks.ui import BackToMenu
 from tests.helpers import feed_inputs
 
 
@@ -16,8 +19,9 @@ def make(tmp_path, *names):
 def test_empty_name_does_not_delete_anything(tmp_path, monkeypatch):
     make(tmp_path, "a.txt", "b.txt")
     for service in (Service_4, Service_5):
-        feed_inputs(monkeypatch, [str(tmp_path), ""])
-        service.run()
+        feed_inputs(monkeypatch, [str(tmp_path), "", "b"])  # empty is re-asked, then back
+        with pytest.raises(BackToMenu):
+            service.run()
     assert sorted(p.name for p in tmp_path.iterdir()) == ["a.txt", "b.txt"]
 
 
@@ -53,7 +57,7 @@ def test_move_never_overwrites(tmp_path, monkeypatch):
     make(src, "a.txt")
     make(dst, "a.txt")
     (dst / "a.txt").write_text("original")
-    feed_inputs(monkeypatch, [str(src), "1", "y", str(dst), "y"])
+    feed_inputs(monkeypatch, [str(src), "1", str(dst), "y"])
     Service_6.run()
     assert (dst / "a.txt").read_text() == "original"
     assert (dst / "a(1).txt").read_text() == "a.txt"
@@ -67,7 +71,7 @@ def test_recursive_move_keeps_same_named_files(tmp_path, monkeypatch):
     (src / "two").mkdir()
     (src / "one" / "a.txt").write_text("one")
     (src / "two" / "a.txt").write_text("two")
-    feed_inputs(monkeypatch, [str(src), "1", "y", str(dst), "y"])
+    feed_inputs(monkeypatch, [str(src), "1", str(dst), "y"])
     Service_7.run()
     assert sorted(p.read_text() for p in dst.iterdir()) == ["one", "two"]
 
@@ -76,7 +80,7 @@ def test_target_inside_source_is_refused(tmp_path, monkeypatch):
     src = tmp_path / "src"
     make(src, "a.txt")
     (src / "target").mkdir()
-    feed_inputs(monkeypatch, [str(src), "1", "y", str(src / "target"), "y"])
+    feed_inputs(monkeypatch, [str(src), "1", str(src / "target"), "y"])
     Service_6.run()
     assert (src / "a.txt").exists()
 

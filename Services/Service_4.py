@@ -1,67 +1,12 @@
-import os
-
-from Tasks.safety import check_folder
-
-from Tasks.collect_files import list_files_flat_withlabel
+from Tasks import flows
 
 service_name = "Files Cleaner By Name - [Flat]"
 service_uuid = "a2b2d3"
 service_description = "Delete all files based on the file name excluding sub folders"
-service_method = None
 
-def run ():
-    folder_path, error = check_folder(input("Enter the folder path to clean: "))
 
-    if error:
-        print(f"Error: {error}")
-        return
-
-    label = input("Enter the files name to clean: ").strip()
-
-    if not label:
-        print("Error: The file name cannot be empty (it would match every file)!")
-        return
-
-    items = list_files_flat_withlabel(folder_path,label)
-
-    if not items:
-         print("No files found in the specified folder.")
-         return
-
-    print("\n" + "=" * 50)
-    print("📊 FILE FOUND")
-    print("=" * 50)
-    print(f"Folder analyzed: {folder_path}")
-    print(f"Total files found: {len(items)}")
-
-    for src, filename in items :
-        print(f"  - {filename}")
-
-    confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
-
-    while confirm != "delete":
-        print("❌ Wrong input type 'delete' to confirm removal or Ctr+c to exit the program.")
-        confirm = input("\nType 'delete' to confirm removal: ").strip().lower()
-
-    deleted_count = 0
-    errors = 0
-
-    for src, filename in items:
-        try:
-            os.remove(src)
-            deleted_count += 1
-            print(f"✓ Deleted: {filename}")
-        except Exception as exc:
-            errors += 1
-            print(f"✗ Error deleting {filename}: {exc}")
-
-    print("\n" + "=" * 50)
-    print("✅ DELETION COMPLETE")
-    print("=" * 50)
-    print(f"Deleted files: {deleted_count}")
-
-    if errors:
-        print(f"Errors: {errors}")
+def run():
+    flows.clean_by_name(False)
 
 
 service_method = run
