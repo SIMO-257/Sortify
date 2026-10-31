@@ -18,5 +18,8 @@ sortify = "sortify.__main__:main"
 [tool.setuptools.packages.find]
 include = ["sortify*"]
 
+[tool.setuptools.package-data]
+sortify = ["web/**/*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
