@@ -1,9 +1,11 @@
 import os
-import shutil
+
+from Tasks.safety import check_folder, is_inside
 
 from Tasks.collect_files import list_files_recursive
 from Tasks.display_files import display_files_by_extensiones
 from Tasks.group_files import group_by_extension
+from Tasks.move_files import move_file
 
 service_name = "Files Replacer Extension Based - [recursive]"
 service_uuid = "a1l2n3"
@@ -11,14 +13,10 @@ service_description = "Moving files from a folder to another based on extension 
 service_method = None
 
 def run():
-    folder_path = input("Enter the folder path to organize: ").strip()
+    folder_path, error = check_folder(input("Enter the folder path to organize: "))
 
-    if not os.path.exists(folder_path):
-        print("Error: Path does not exist!")
-        return
-
-    if not os.path.isdir(folder_path):
-        print("Error: Path is not a folder!")
+    if error:
+        print(f"Error: {error}")
         return
 
     items = list_files_recursive(folder_path)
@@ -34,14 +32,14 @@ def run():
     if not file_list:
         return
 
-    target_path = input("Enter the target folder path to move the files into: ").strip()
+    target_path, error = check_folder(input("Enter the target folder path to move the files into: "))
 
-    if not os.path.exists(target_path):
-        print("Error: Path does not exist!")
+    if error:
+        print(f"Error: {error}")
         return
 
-    if not os.path.isdir(target_path):
-        print("Error: Path is not a folder!")
+    if is_inside(target_path, folder_path):
+        print("Error: The target folder must be outside the source folder!")
         return
 
     confirm = input("Continue with organization? (y/n): ").strip().lower()
@@ -56,9 +54,8 @@ def run():
 
     for src, file_name in file_list:
         try:
-            dest = os.path.join(target_path, file_name)
-            shutil.move(src, dest)
-            print(f"✓ Moved: {file_name} → {target_path}/")
+            unique_name = move_file(src, target_path, file_name)
+            print(f"✓ Moved: {file_name} → {target_path}/{unique_name}")
         except Exception as e:
             print(f"✗ Error moving {file_name}: {e}")
     print("\n" + "="*50)

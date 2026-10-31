@@ -1,5 +1,7 @@
 import os
 
+from Tasks.safety import check_folder
+
 from Tasks.collect_files import list_files_recursive_withlabel
 
 service_name = "Files Cleaner By Name - [recursive]"
@@ -8,17 +10,17 @@ service_description = "Delete all files based on the file name including sub fol
 service_method = None
 
 def run ():
-    folder_path = input("Enter the folder path to clean: ").strip()
+    folder_path, error = check_folder(input("Enter the folder path to clean: "))
 
-    if not os.path.exists(folder_path):
-        print("Error: Path does not exist!")
-        return
-
-    if not os.path.isdir(folder_path):
-        print("Error: Path is not a folder!")
+    if error:
+        print(f"Error: {error}")
         return
 
     label = input("Enter the files name to clean: ").strip()
+
+    if not label:
+        print("Error: The file name cannot be empty (it would match every file)!")
+        return
 
     items = list_files_recursive_withlabel(folder_path,label)
 

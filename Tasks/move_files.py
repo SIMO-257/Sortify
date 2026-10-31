@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def get_unique_filename(destination_folder, filename):
@@ -18,5 +19,5 @@ def create_folder(folder_path):
 def move_file(src, destination_folder, filename):
     unique_name = get_unique_filename(destination_folder, filename)
     dest = os.path.join(destination_folder, unique_name)
-    os.rename(src, dest)
+    shutil.move(src, dest)
     return unique_name

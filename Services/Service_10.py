@@ -1,4 +1,6 @@
 import os
+
+from Tasks.safety import check_folder
 from Tasks.collect_folders import collect_empty_folders
 
 service_name = "Empty Directories Cleaner"
@@ -7,14 +9,10 @@ service_description = "Delete empty folders in the given path"
 service_method = None
 
 def run():
-    folder_path = input("Enter the folder path to organize: ").strip()
+    folder_path, error = check_folder(input("Enter the folder path to organize: "))
 
-    if not os.path.exists(folder_path):
-        print("Error: Path does not exist!")
-        return
-
-    if not os.path.isdir(folder_path):
-        print("Error: Path is not a folder!")
+    if error:
+        print(f"Error: {error}")
         return
 
     items = collect_empty_folders(folder_path)
@@ -44,7 +42,7 @@ def run():
 
     for folder_path,folder_name in items:
         try:
-            os.removedirs(folder_path)
+            os.rmdir(folder_path)
             total_moved += 1
             print(f"✓ Removed: {folder_name} → {folder_path}")
         except Exception as e:

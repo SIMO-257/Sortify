@@ -8,7 +8,7 @@ def group_by_extension(items):
 
     for src, filename in items:
         ext = os.path.splitext(filename)[1].lower()
-        if ext:
+        if ext not in ("", "."):
             extensions.setdefault(ext, []).append((src, filename))
         else:
             no_extension.append((src, filename))

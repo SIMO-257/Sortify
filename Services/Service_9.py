@@ -1,5 +1,7 @@
 import os
 
+from Tasks.safety import check_folder
+
 from Tasks.collect_files import list_files_recursive
 from Tasks.group_files import group_by_date_day
 from Tasks.move_files import create_folder, move_file
@@ -11,14 +13,10 @@ service_description = "Orginizing files based on their date(days) including subf
 service_method = None
 
 def run():
-    folder_path = input("Enter the folder path to organize: ").strip()
+    folder_path, error = check_folder(input("Enter the folder path to organize: "))
 
-    if not os.path.exists(folder_path):
-        print("Error: Path does not exist!")
-        return
-
-    if not os.path.isdir(folder_path):
-        print("Error: Path is not a folder!")
+    if error:
+        print(f"Error: {error}")
         return
 
     items = list_files_recursive(folder_path)
