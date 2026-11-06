@@ -1,42 +1,57 @@
 import { useEffect, useState } from "react";
 import { api } from "./api";
-import type { LogInfo } from "./types";
+import { runKind, runStatus, shortPath, timeAgo, VERB } from "./format";
+import { Icon } from "./icons";
+import { metaFor } from "./meta";
+import type { LogInfo, Operation } from "./types";
+import { IconTile } from "./ui";
 
-type Props = { onOpen: (id: string) => void; onBack: () => void };
+type Props = { operations: Operation[] | null; home?: string; onOpen: (id: string) => void; onError: (text: string) => void };
 
-export default function History({ onOpen, onBack }: Props) {
+export default function History({ operations, home, onOpen, onError }: Props) {
   const [runs, setRuns] = useState<LogInfo[] | null>(null);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    api.logs().then(setRuns).catch((e: Error) => setError(e.message));
+    api.logs().then(setRuns).catch((e: Error) => { setRuns([]); onError(e.message); });
   }, []);
 
+  const names = Object.fromEntries((operations ?? []).map((o) => [o.id, o.name]));
+
   return (
-    <div className="card stack">
-      <h2>History</h2>
-      {error && <p className="error">{error}</p>}
-      {runs && runs.length === 0 && <p className="muted">No runs yet.</p>}
-      <ul className="runs">
-        {runs?.map((run) => (
-          <li key={run.id}>
-            <button className="link" onClick={() => onOpen(run.id)}>
-              <strong>{run.kind === "undo" ? "↩ Undo of " : ""}{run.operation}</strong>
-              <span className="muted">
-                {" "}
-                {run.started_at} · {run.folder}
+    <div className="view">
+      <h1 className="hero sm">History</h1>
+      <p className="lead">Every run is saved on your computer. Open one to see each file, or undo it.</p>
+
+      {runs === null && Array.from({ length: 4 }, (_, i) => <div key={i} className="rrow skeleton" aria-hidden="true" />)}
+      {runs?.length === 0 && (
+        <div className="empty big">
+          <Icon name="clock" size={30} />
+          <b>No runs yet</b>
+          <span>When you organize, move or clean files, each run will be listed here.</span>
+        </div>
+      )}
+
+      <div className="runs">
+        {runs?.map((run) => {
+          const meta = metaFor(run.operation);
+          const status = runStatus(run);
+          const title = (names[run.operation] ?? run.operation) + (run.kind === "undo" ? " (undo)" : "");
+          return (
+            <button key={run.id} className="rrow" onClick={() => onOpen(run.id)}>
+              <IconTile name={run.kind === "undo" ? "undo" : meta.icon} accent={run.kind === "undo" ? "blue" : meta.accent} size="sm" />
+              <span className="rtxt">
+                <b>{title}</b>
+                <span className="mono">{shortPath(run.folder, home)}</span>
               </span>
-              <span className="muted">
-                {" "}
-                · {run.summary.done} done, {run.summary.failed} failed{run.undone ? " · undone" : ""}
-                {run.status === "interrupted" ? " · interrupted" : ""}
+              <span className="muted col-count">
+                {run.summary.done} {VERB[runKind(run)]}{run.summary.failed ? ` · ${run.summary.failed} failed` : ""}
               </span>
+              <span className="muted col-time" title={run.started_at}>{timeAgo(run.started_at)}</span>
+              <span className={`badge ${status.tone}`}>{status.label}</span>
+              <span className="go flat" aria-hidden="true"><Icon name="chevronRight" size={16} /></span>
             </button>
-          </li>
-        ))}
-      </ul>
-      <div className="row end">
-        <button onClick={onBack}>Back</button>
+          );
+        })}
       </div>
     </div>
   );

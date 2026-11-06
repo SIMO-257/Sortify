@@ -39,6 +39,26 @@ def hostname(header):
     return header.split(":")[0]
 
 
+def shortcuts():
+    """Common folders that exist on this computer, for quick access in the folder picker."""
+    home = os.path.expanduser("~")
+    places = [("Home", home)] + [(name, os.path.join(home, name))
+                                 for name in ("Desktop", "Downloads", "Documents", "Pictures")]
+    return [{"name": name, "path": path} for name, path in places if os.path.isdir(path)]
+
+
+def count_items(path):
+    """How many things are inside a folder, or None when it cannot be read."""
+    try:
+        with os.scandir(path) as entries:
+            return sum(1 for _ in entries)
+    except OSError:
+        return None
+
+
+MAX_COUNTED_FOLDERS = 300  # counting is skipped for huge listings to keep the picker fast
+
+
 def create_app(token, allowed_hosts=None):
     app = FastAPI(title="Sortify", docs_url=None, redoc_url=None, openapi_url=None)
     plans = OrderedDict()
@@ -123,11 +143,14 @@ def create_app(token, allowed_hosts=None):
         if not hidden:
             names = [n for n in names if not n.startswith(".")]
         parent = os.path.dirname(current)
+        count = len(names) <= MAX_COUNTED_FOLDERS
         return {
             "path": current,
             "parent": parent if parent != current else None,
-            "folders": names,
+            "folders": [{"name": n, "items": count_items(os.path.join(current, n)) if count else None}
+                        for n in names],
             "blocked": blocked_reason(current),
+            "shortcuts": shortcuts(),
         }
 
     if WEB_DIR.is_dir():

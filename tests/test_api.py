@@ -110,8 +110,9 @@ def test_browse(client, tmp_path):
     (tmp_path / ".hidden").mkdir()
     (tmp_path / "file.txt").write_text("x")
     data = client.get("/api/fs/browse", params={"path": str(tmp_path)}).json()
-    assert data["folders"] == ["a", "b"] and data["parent"] == str(tmp_path.parent)
-    assert ".hidden" in client.get("/api/fs/browse", params={"path": str(tmp_path), "hidden": True}).json()["folders"]
+    assert [f["name"] for f in data["folders"]] == ["a", "b"] and data["parent"] == str(tmp_path.parent)
+    hidden = client.get("/api/fs/browse", params={"path": str(tmp_path), "hidden": True}).json()["folders"]
+    assert ".hidden" in [f["name"] for f in hidden]
     assert client.get("/api/fs/browse", params={"path": "/"}).json()["blocked"]
     assert client.get("/api/fs/browse", params={"path": str(tmp_path / "file.txt")}).status_code == 400
     assert client.get("/api/fs/browse").json()["path"]
@@ -119,3 +120,16 @@ def test_browse(client, tmp_path):
 
 def test_log_id_traversal_is_not_found(client):
     assert client.get("/api/logs/..%2F..%2Fetc%2Fpasswd").status_code == 404
+
+
+def test_browse_counts_items_and_offers_shortcuts(client, monkeypatch, tmp_path):
+    (tmp_path / "Downloads").mkdir()
+    (tmp_path / "Downloads" / "a.txt").write_text("x")
+    (tmp_path / "Downloads" / "b.txt").write_text("x")
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
+    data = client.get("/api/fs/browse", params={"path": str(tmp_path)}).json()
+    assert data["folders"] == [{"name": "Downloads", "items": 2}]
+    assert {"name": "Downloads", "path": str(tmp_path / "Downloads")} in data["shortcuts"]
+    assert data["shortcuts"][0]["name"] == "Home"
+    assert all(s["name"] != "Desktop" for s in data["shortcuts"])  # missing folders are left out

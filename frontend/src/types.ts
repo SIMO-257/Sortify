@@ -49,13 +49,16 @@ export type LogInfo = {
   undo_of?: string;
 };
 
-export type Log = LogInfo & { actions: Action[] };
+export type Log = LogInfo & { actions: Action[]; created_dirs?: string[] };
+
+export type Place = { name: string; path: string };
 
 export type BrowseResult = {
   path: string;
   parent: string | null;
-  folders: string[];
+  folders: { name: string; items: number | null }[];
   blocked: string | null;
+  shortcuts: Place[];
 };
 
 export type ExtensionCount = { extension: string; count: number };
